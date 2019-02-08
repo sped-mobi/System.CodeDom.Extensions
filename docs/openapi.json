@@ -1,0 +1,343 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "v1",
+    "title": "CKAN API",
+    "description": "Content Knowledge Area Network",
+    "contact": {
+      "name": "Brad R. Marshall",
+      "email": "bmarshall@sped.mobi",
+      "url": "http://sped.mobi"
+    },
+    "license": {
+      "name": "Open Data Commons Attribution License (ODC-By) v1.0",
+      "url": "https://www.opendatacommons.org/licenses/by/1.0/"
+    },
+    "termsOfService": "https://termsfeed.com/terms-conditions/56026ecc1c65018359f5fc45fd060775"
+  },
+  "paths": {
+    "/datasets": {
+      "get": {
+        "tags": [
+          "DatasetsController"
+        ],
+        "description": "Gets a collection of the site's datasets.",
+        "operationId": "GetDatasets",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "$ref": "#/components/parameters/orderBy"
+          },
+          {
+            "$ref": "#/components/parameters/filter"
+          },
+          {
+            "$ref": "#/components/parameters/fields"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "This is the response when the request has been completed successfully. It is the set of Datasets from the service provider.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "429": {
+            "$ref": "#/components/responses/429"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "DatasetsController"
+        ],
+        "description": "Adds a Dataset to the collection.",
+        "operationId": "PostDataset",
+        "responses": {
+          "201": {
+            "headers": [
+              {
+                "name": "X-CKAN-API-Key",
+                "description": "Authorization Header",
+                "type": "string"
+              }
+            ],
+            "description": "This is the response when the request has been completed successfully. It is the Dataset supplied during post.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dataset"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "400": {
+        "description": "An invalid selection field was supplied and data filtering on the selection criteria was not possible i.e. 'invalid_selection_field'. This is accompanied by the 'codeMajor/severity' values of 'failure/error'.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/StatusInfo"
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "The request was not correctly authorised i.e. 'unauthorisedrequest'. This would be accompanied by the 'codeMajor/severity' values of 'failure/error'.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/StatusInfo"
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "This is used to indicate that the server can be reached and process the request but refuses to take any further action i.e. 'forbidden'. This would be accompanied by the 'codeMajor/severity' values of 'failure/error'.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/StatusInfo"
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Either the supplied identifier is unknown in the Service Provider and so the object could not be changed or an invalid UUID has been supplied. This would be accompanied by the 'codeMajor/severity' values of 'failure/error'. The statement 'Unknown Object' of 'Invalid UUID' should also be presented.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/StatusInfo"
+            }
+          }
+        }
+      },
+      "429": {
+        "description": "The server is receiving too many requests i.e. 'server_busy'. Retry at a later time. This would be accompanied by the 'codeMajor/severity' values of 'failure/error'.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/StatusInfo"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "This code should be used only if there is catastrophic error and there is not a more appropriate code i.e. 'internal_server_error'. This would be accompanied by the 'codeMajor/severity' values of 'failure/error'.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/StatusInfo"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "limit": {
+        "name": "limit",
+        "description": "This is used as part of the data pagination mechanism to control the download rate of data. The 'limit' defines the download segmentation value i.e. the maximum number of records to be contained in the response. The form of implementation is described in the corresponding binding document(s).",
+        "in": "query",
+        "required": false,
+        "allowEmptyValue": false,
+        "schema": {
+          "default": 100,
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "offset": {
+        "name": "offset",
+        "description": "This is used as part of the data pagination mechanism to control the download rate of data. The 'offset' is the number of the first record to be supplied in the segmented response message. The form of implementation is described in the corresponding binding document(s).",
+        "in": "query",
+        "required": false,
+        "allowEmptyValue": false,
+        "schema": {
+          "default": 0,
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "sort": {
+        "name": "sort",
+        "in": "query",
+        "required": false,
+        "allowEmptyValue": false,
+        "description": "This is used as part of the sorting mechanism to be use by the service provider. The 'sort' identifies the sort criteria to be used for the records in the response message. Use with the orderBy parameter. The form of implementation is described in the corresponding binding document(s).",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "orderBy": {
+        "name": "orderBy",
+        "in": "query",
+        "required": false,
+        "allowEmptyValue": false,
+        "description": "This is used as part of the sorting mechanism to be use by the service provider. This defines the form of ordering for response to the sorted request i.e. ascending (asc) or descending (desc). The form of implementation is described in the corresponding binding document(s).",
+        "schema": {
+          "type": "string",
+          "default": "asc",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        }
+      },
+      "filter": {
+        "name": "filter",
+        "in": "query",
+        "required": false,
+        "allowEmptyValue": false,
+        "description": "This is used for the data filtering mechanism to be applied by the service provider. It defines the filtering rules to be applied when identifying the records to be supplied in the response message. The form of implementation is described in the corresponding binding document(s).",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "fields": {
+        "name": "fields",
+        "in": "query",
+        "required": false,
+        "allowEmptyValue": false,
+        "description": "This is used as part of the field selection mechanism to be applied by the service provider. This identifies the range of fields that should be supplied in the response message. The form of implementation is described in the corresponding binding document(s).",
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "examples": {},
+    "headers": {},
+    "schemas": {
+      "Dataset": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Guid"
+          },
+          "url": {
+            "$ref": "#/components/schemas/Url"
+          },
+          "title": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "$ref": "#/components/schemas/Url"
+          }
+        }
+      },
+      "DatasetList": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "$ref": "#/components/schemas/Dataset"
+        }
+      },
+      "Url": {
+        "type": "string",
+        "format": "uri",
+        "description": "The data-type for establishing a Uniform Resource Locator (URL) as defined by W3C."
+      },
+      "Guid": {
+        "description": "The data-type for establishing a Globally Unique Identifier (GUID). The form of the GUID is a Universally Unique Identifier (UUID) of 16 hexadecimal characters (lower case) in the format 8-4-4-4-12. All permitted versions (1-5) and variants (1-2) are supported.",
+        "type": "string",
+        "format": "uuid"
+      },
+      "StatusCodeEntry": {
+        "description": "This is the container for a single status code entry.",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/StatusCodeType"
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ],
+        "additionalProperties": false
+      },
+      "StatusCodeType": {
+        "type": "string",
+        "enum": [
+          "success",
+          "invalid_sort_field",
+          "invalid_selection_field",
+          "forbidden",
+          "unauthorised_request",
+          "internal_server_error",
+          "unknownobject",
+          "server_busy",
+          "invalid_uuid"
+        ],
+        "default": "success",
+        "additionalProperties": false
+      },
+      "StatusSeverityType": {
+        "type": "string",
+        "enum": [
+          "status",
+          "warning",
+          "error"
+        ],
+        "default": "status",
+        "additionalProperties": false
+      },
+      "StatusMessageType": {
+        "type": "string",
+        "enum": [
+          "success",
+          "processing",
+          "failure",
+          "unsupported"
+        ],
+        "additionalProperties": false
+      },
+      "StatusInfo": null
+    }
+  },
+  "servers": [
+    {
+      "url": "http://datasethub.com/api/v1"
+    }
+  ]
+}

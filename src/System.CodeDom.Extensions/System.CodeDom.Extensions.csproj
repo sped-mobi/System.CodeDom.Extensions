@@ -1,0 +1,63 @@
+﻿<Project>
+
+  <PropertyGroup>
+    
+    <IncludeCommonReferences>true</IncludeCommonReferences>
+  </PropertyGroup>
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+
+
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/sped-mobi/System.CodeDom.Extensions/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/sped-mobi/System.CodeDom.Extensions</PackageProjectUrl>
+    <PackageIconUrl>https://marketplace.visualstudio.com/favicon.ico</PackageIconUrl>
+    <RepositoryUrl>https://github.com/sped-mobi/System.CodeDom.Extensions</RepositoryUrl>
+    <PackageTags>CodeDom</PackageTags>
+    <Description>
+    Implementation of CodeGenerator under the System.CodeDom.CSharp namespace.
+    System.CodeDom.CSharp.CSharpCodeGenerator
+    </Description>
+  </PropertyGroup>
+
+
+
+  <ItemGroup>
+    <Compile Remove="CodeDom\CSharp\Indentation.cs" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <Compile Update="CodeDom\CSharp\SR.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SR.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <EmbeddedResource Update="CodeDom\CSharp\SR.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SR.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+
+
+
+
+
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+</Project>

@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+*********************************************************************************************** 
+Directory.Build.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) Ollon, LLC. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <Import Project="$(VsToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(ImportVSSDKTargets)' == 'true'" />
+
+  <!--                           -->
+  <!--   Assembly Search Paths   -->
+  <!--                           -->
+  <PropertyGroup>
+    <AssemblyFoldersSuffix>AssemblyFoldersEx</AssemblyFoldersSuffix>
+    <FrameworkRegistryBase>Software\Microsoft\.NETFramework</FrameworkRegistryBase>
+    <ProjectSystemExtensionDir>$(DevEnvDir)CommonExtensions\Microsoft\Project\</ProjectSystemExtensionDir>
+    <NuGetExtensionDir>$(DevEnvDir)CommonExtensions\Microsoft\NuGet\</NuGetExtensionDir>
+    <LanguageServicesDir>$(DevEnvDir)CommonExtensions\Microsoft\ManagedLanguages\VBCSharp\LanguageServices\</LanguageServicesDir>
+    <CommonAssembliesDir>$([System.IO.Path]::GetFullPath('$(DevEnvDir)..\..\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\'))</CommonAssembliesDir>
+    <PrivateAssemblies>$(DevEnvDir)PrivateAssemblies\</PrivateAssemblies>
+    <PublicAssemblies>$(DevEnvDir)PublicAssemblies\</PublicAssemblies>
+    <ExtensionsDir>$(DevEnvDir)Extensions\</ExtensionsDir>
+    <ManagedProjectSystemDir>$(ExtensionsDir)Microsoft\ManagedProjectSystem\</ManagedProjectSystemDir>
+    <SqlCommonDir>$(DevEnvDir)Extensions\Microsoft\SQLCommon\</SqlCommonDir>
+    <DACExtensions150Dir>$(DevEnvDir)Extensions\Microsoft\SQLDB\DAC\150\</DACExtensions150Dir>
+    <AssemblySearchPaths>
+      $(SolutionDir)Lib\;
+      $(MSBuildExtensionsPath)\$(VisualStudioVersion)\Bin\;
+      $(MSBuildExtensionsPath)\$(VisualStudioVersion)\Bin\Roslyn\;
+      $(ProjectSystemExtensionDir);
+      $(NuGetExtensionDir);
+      $(LanguageServicesDir);
+      $(ReferencePath);
+      {CandidateAssemblyFiles};
+      {HintPathFromItem};
+      {TargetFrameworkDirectory};
+      {RawFileName};
+      {GAC};
+      {Registry:$(FrameworkRegistryBase),$(TargetFrameworkVersion),$(AssemblyFoldersSuffix)$(AssemblyFoldersExConditions)};
+      $(DevEnvDir);
+      $(SqlCommonDir);
+      $(PrivateAssemblies);
+      $(PublicAssemblies);
+      $(CommonAssembliesDir);
+      $(DACExtensions150Dir);
+      $(ManagedProjectSystemDir);
+    </AssemblySearchPaths>
+    <DesignTimeAssemblySearchPaths>$(AssemblySearchPaths)</DesignTimeAssemblySearchPaths>
+  </PropertyGroup>
+
+  <!--                           -->
+  <!--   Generate AssemblyInfo   -->
+  <!--                           -->
+
+  <PropertyGroup>
+    <GeneratedFileExtension>.g.cs</GeneratedFileExtension>
+    <GeneratedAssemblyInfoFile>$(IntermediateOutputPath)GeneratedAssemblyInfo_$(BuildVersion)$(GeneratedFileExtension)</GeneratedAssemblyInfoFile>
+    <InternalsVisibleToSuffix>, PublicKey=$(PublicKey)</InternalsVisibleToSuffix>
+    <GeneratedInternalsVisibleToFile>$(IntermediateOutputPath)GeneratedInternalsVisibleTo$(GeneratedFileExtension)</GeneratedInternalsVisibleToFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyVersionAttribute Include="System.Reflection.AssemblyTitleAttribute">
+      <_Parameter1>$(AssemblyName)</_Parameter1>
+    </AssemblyVersionAttribute>
+    <AssemblyVersionAttribute Include="System.Reflection.AssemblyCompanyAttribute">
+      <_Parameter1>$(Company)</_Parameter1>
+    </AssemblyVersionAttribute>
+    <AssemblyVersionAttribute Include="System.Reflection.AssemblyCopyrightAttribute">
+      <_Parameter1>$(Copyright)</_Parameter1>
+    </AssemblyVersionAttribute>
+    <AssemblyVersionAttribute Include="System.Reflection.AssemblyProductAttribute">
+      <_Parameter1>$(AssemblyName)</_Parameter1>
+    </AssemblyVersionAttribute>
+    <AssemblyVersionAttribute Include="System.Reflection.AssemblyDescriptionAttribute">
+      <_Parameter1>$(AssemblyName)</_Parameter1>
+    </AssemblyVersionAttribute>
+    <AssemblyVersionAttribute Include="System.Reflection.AssemblyVersionAttribute">
+      <_Parameter1>$(AssemblyVersion)</_Parameter1>
+    </AssemblyVersionAttribute>
+    <AssemblyVersionAttribute Include="System.Reflection.AssemblyFileVersionAttribute">
+      <_Parameter1>$(BuildVersion)</_Parameter1>
+    </AssemblyVersionAttribute>
+    <AssemblyVersionAttribute Include="System.Reflection.AssemblyInformationalVersionAttribute">
+      <_Parameter1>$(BuildVersion)</_Parameter1>
+    </AssemblyVersionAttribute>
+  </ItemGroup>
+
+  <Target Name="GenerateAssemblyInfoFile" Inputs="$(MSBuildThisFileFullPath)" Outputs="$(GeneratedAssemblyInfoFile)" DependsOnTargets="PrepareForBuild">
+    <WriteCodeFragment AssemblyAttributes="@(AssemblyVersionAttribute)" Language="$(Language)" OutputFile="$(GeneratedAssemblyInfoFile)">
+      <Output TaskParameter="OutputFile" ItemName="Compile" />
+      <Output TaskParameter="OutputFile" ItemName="FileWrites" />
+    </WriteCodeFragment>
+  </Target>
+
+
+  <PropertyGroup>
+    <CoreCompileDependsOn>
+      GenerateAssemblyInfoFile;
+      $(CoreCompileDependsOn)
+    </CoreCompileDependsOn>
+  </PropertyGroup>
+
+
+  <!--                                 -->
+  <!--   Generate InternalsVisibleTo   -->
+  <!--                                 -->
+
+  <ItemDefinitionGroup>
+    <InternalsVisibleTo>
+      <Visible>false</Visible>
+    </InternalsVisibleTo>
+  </ItemDefinitionGroup>
+
+  <Target Name="GenerateInternalsVisibleToFile" Condition="'@(InternalsVisibleTo)'!=''" Inputs="$(MSBuildThisFileFullPath);$(MSBuildProjectFile)" Outputs="$(GeneratedInternalsVisibleToFile)" DependsOnTargets="PrepareForBuild">
+    <ItemGroup>
+      <InternalsVisibleTo Include="$(InternalsVisibleTo)" />
+    </ItemGroup>
+
+
+    <CreateItem Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute" AdditionalMetadata="_Parameter1=%(InternalsVisibleTo.Identity)$(InternalsVisibleToSuffix)">
+      <Output TaskParameter="Include" ItemName="InternalsVisibleToAttribute" />
+    </CreateItem>
+
+    <WriteCodeFragment AssemblyAttributes="@(InternalsVisibleToAttribute)" Language="$(Language)" OutputFile="$(GeneratedInternalsVisibleToFile)">
+      <Output TaskParameter="OutputFile" ItemName="Compile" />
+      <Output TaskParameter="OutputFile" ItemName="FileWrites" />
+    </WriteCodeFragment>
+
+  </Target>
+
+  <PropertyGroup>
+    <CoreCompileDependsOn>
+      GenerateInternalsVisibleToFile;
+      $(CoreCompileDependsOn)
+    </CoreCompileDependsOn>
+  </PropertyGroup>
+
+
+  <PropertyGroup>
+    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">$(MicrosoftNETCoreApp20PackageVersion)</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">$(MicrosoftNETCoreApp21PackageVersion)</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">$(MicrosoftNETCoreApp22PackageVersion)</RuntimeFrameworkVersion>
+    <NETStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard2.0' ">$(NETStandardLibrary20PackageVersion)</NETStandardImplicitPackageVersion>
+    <NETCoreAppMaximumVersion>99.9</NETCoreAppMaximumVersion>
+  </PropertyGroup>
+
+
+  <Target Name="GenerateQuicktypeModel" Condition="'$(QuicktypeTaskEnabled)'=='true'" DependsOnTargets="PrepareForBuild">
+    <PropertyGroup>
+      <CSharpOutputFile>$(IntermediateOutputPath)Configuration.cs</CSharpOutputFile>
+      <PythonOutputFile>Configuration.py</PythonOutputFile>
+      <JsonSchemaOutputFile>Configuration.schema.json</JsonSchemaOutputFile>
+      <Namespace>CkanApiHelper</Namespace>
+      <ConfigFile>C:\Users\Administrator\source\repos\OpenApiUtilities\tools\CkanApiHelper\Configuration.json</ConfigFile>
+      <InputFile>$(ConfigFile)</InputFile>
+    </PropertyGroup>
+    <Exec Command="cmd.exe /c quicktype.cmd -o $(CSharpOutputFile) --namespace $(Namespace) --array-type list --csharp-version 6 $(InputFile)"/>
+    <ItemGroup>
+      <Compile Include="$(CSharpOutputFile)" />
+      <FileWrites Include="$(CSharpOutputFile)" />
+    </ItemGroup>
+  </Target>
+
+<!---
+  <Target Name="SwaggerToFile" AfterTargets="AfterBuild" Condition="'$(GenerateSwaggerDocument)'=='true'">
+    <Exec Command="dotnet swagger tofile -host http://$(COMPUTERNAME):8080/api/v1 -output &quot;$(MSBuildProjectDirectory)/wwwroot/schemas/v1/openapi.json&quot; &quot;$(TargetPath)&quot; v1" />
+  </Target>
+-->
+  <PropertyGroup>
+    <CoreCompileDependsOn>
+      GenerateQuicktypeModel;
+      $(CoreCompileDependsOn)
+    </CoreCompileDependsOn>
+  </PropertyGroup>
+
+
+
+
+
+  <!--           -->
+  <!--   VSSDK   -->
+  <!--           -->
+
+  <Target Name="LinkVSSDKEmbeddableAssemblies" AfterTargets="ResolveReferences" BeforeTargets="FindReferenceAssembliesForReferences">
+    <ItemGroup>
+      <!--<VSCTCompile Condition="
+              '%(Extension)' == '.vsct'
+           " Include="%(FullPath)">
+        <ResourceName>Menus.ctmenu</ResourceName>
+      </VSCTCompile>-->
+      <ReferencePath Condition="
+              '%(FileName)' == 'Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Imaging.Interop.15.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Setup.Configuration.Interop'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Embeddable'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.10.0'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.11.0'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.12.0'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.15.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.15.3.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.TextManager.Interop.11.0'
+           or '%(FileName)' == 'Microsoft.VisualStudio.TextManager.Interop.12.0'
+           or '%(FileName)' == 'Microsoft.VisualStudio.TextManager.Interop.12.1.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.TextManager.Interop.14.2.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.TextManager.Interop.15.1.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Feedback.Interop.12.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.ProjectSystem.Interop'
+           or '%(FileName)' == 'NuGet.VisualStudio'
+           or '%(FileName)' == 'stdole'
+           or '%(FileName)' == 'microsoft.visualstudio.designer.interfaces'
+           or '%(FileName)' == 'EnvDTE80'
+           or '%(FileName)' == 'EnvDTE90'
+           or '%(FileName)' == 'EnvDTE100'
+           or '%(FileName)' == 'Microsoft.VisualStudio.CommandBars'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Interop.10.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Interop.11.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Interop.14.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Interop.14.1.DesignTime'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Interop.14.2.DesignTime'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Embeddable'
+              ">
+        <EmbedInteropTypes>true</EmbedInteropTypes>
+      </ReferencePath>
+    </ItemGroup>
+  </Target>
+
+  <PropertyGroup Condition="'$(CreateVsixContainer)' == 'true'">
+    <GetVsixSourceItemsDependsOn>IncludeNuGetResolvedAssets;$(GetVsixSourceItemsDependsOn)</GetVsixSourceItemsDependsOn>
+  </PropertyGroup>
+
+  <Target Name="IncludeNuGetResolvedAssets" AfterTargets="ResolveReferences" Condition="'$(CreateVsixContainer)' == 'true'">
+    <ItemGroup>
+      <_ReferenceCopyLocalPathsWithPotentialInclusions Include="@(ReferenceCopyLocalPaths)" />
+      <VSIXCopyLocalReferenceSourceItem Include="@(_ReferenceCopyLocalPathsWithPotentialInclusions)">
+        <ForceIncludeInVsix>true</ForceIncludeInVsix>
+        <Private>true</Private>
+      </VSIXCopyLocalReferenceSourceItem>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="VSIXIdentifierProjectOutputGroup" Condition="'$(CreateVsixContainer)' == 'false'" />
+  <Target Name="VSIXNameProjectOutputGroup" Condition="'$(CreateVsixContainer)' == 'false'" />
+
+
+
+  <Choose>
+    <When Condition="'$(IncludeWebApiReferences)' == 'true'">
+      <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.All" />
+        <PackageReference Include="Microsoft.AspNetCore.Razor.Language" Version="$(MicrosoftAspNetCoreRazorLanguageVersion)" />
+        <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="$(MicrosoftAspNetCoreRazorDesignVersion)" PrivateAssets="All" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="$(SwashbuckleAspNetCoreVersion)"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.ReDoc" Version="$(SwashbuckleAspNetCoreVersion)"/>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="$(MicrosoftVisualStudioWebCodeGenerationDesignVersion)" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(IncludeWebServicesReferences)' == 'true'">
+      <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJsonVersion)" />
+        <PackageReference Include="Microsoft.OpenApi" Version="$(MicrosoftOpenApiVersion)" />
+        <PackageReference Include="Microsoft.OpenApi.Readers" Version="$(MicrosoftOpenApiReadersVersion)" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(EntityFrameworkCoreVersion)" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="$(SwashbuckleAspNetCoreVersion)" />
+        <!--<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="$(SwashbuckleAspNetCoreVersion)"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="$(SwashbuckleAspNetCoreVersion)"/>-->
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="$(SwashbuckleAspNetCoreVersion)"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.ReDoc" Version="$(SwashbuckleAspNetCoreVersion)"/>
+        <DotNetCliToolReference Include="Swashbuckle.AspNetCore.Cli" Version="$(SwashbuckleAspNetCoreVersion)" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(IncludeEFCoreGeneratorReferences)' == 'true'">
+      <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(EntityFrameworkCoreVersion)" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EntityFrameworkCoreVersion)" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(EntityFrameworkCoreVersion)" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EntityFrameworkCoreVersion)" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="$(IncludeCommonReferences) == 'true'">
+      <ItemGroup>
+        <Reference Include="System">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="System.Web">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="System.Core">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="System.Data">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="System.Xml">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="System.Xml.Linq">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="System.Net">
+          <Private>false</Private>
+        </Reference>
+        <!--<Reference Include="System.ComponentModel.Composition">
+          <Private>false</Private>
+        </Reference>-->
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(IncludeWpfReferences)'=='true'">
+      <ItemGroup>
+        <Reference Include="System.Xaml">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="WindowsBase">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="PresentationCore">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="PresentationFramework">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="CustomMarshalers">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="WindowsFormsIntegration">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="System.Windows.Forms">
+          <Private>false</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(IncludeMSBuildReferences)'=='true'">
+      <ItemGroup>
+        <Reference Include="Microsoft.Build">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="Microsoft.Build.Framework">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="Microsoft.Build.Tasks.Core">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="Microsoft.Build.Utilities.Core">
+          <Private>false</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(IncludeRoslynReferences)'=='true'">
+      <ItemGroup>
+        <Reference Include="PresentationFramework"/>
+        <Reference Include="PresentationCore"/>
+        <Reference Include="WindowsBase"/>
+        <Reference Include="System.Xml"/>
+        <Reference Include="System.Windows"/>
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(IncludeTextTemplatingReferences)'=='true'">
+      <ItemGroup>
+        <PackageReference Include="Microsoft.VisualStudio.TextTemplating.VSHost.15.0" Version="16.0.28316-pre"/>
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(IncludeOpenApiReferences)' == 'true'">
+      <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJsonVersion)" />
+        <PackageReference Include="Microsoft.OpenApi" Version="$(MicrosoftOpenApiVersion)" />
+      </ItemGroup>
+      <ItemGroup>
+        <Reference Include="System.ComponentModel.Composition">
+          <Private>false</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(IncludePowerShellReferences)' == 'true'">
+      <ItemGroup>
+        <Reference Include="System.Management" />
+        <Reference Include="System.Management.Automation" />
+        <Reference Include="Microsoft.Management.Infrastructure" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(IncludePowerShellEditorReferences)' == 'true'">
+      <ItemGroup>
+        <Reference Include="System.Xaml" />
+        <Reference Include="WindowsBase" />
+        <Reference Include="PresentationCore" />
+        <Reference Include="PresentationFramework" />
+        <Reference Include="System.Management" />
+        <Reference Include="System.Management.Automation" />
+        <Reference Include="Microsoft.Management.Infrastructure" />
+        <Reference Include="Microsoft.PowerShell.Editor" />
+        <Reference Include="Microsoft.PowerShell.GPowerShell" />
+        <Reference Include="Microsoft.PowerShell.GraphicalHost" />
+        <Reference Include="Microsoft.PowerShell.ISECommon" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(IncludeMvcReferences)' == 'true'">
+      <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.All" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(IncludeAspNetMvcReferences)' == 'true'">
+      <ItemGroup>
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="System" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Drawing" />
+        <Reference Include="System.Web.DynamicData" />
+        <Reference Include="System.Web.Entity" />
+        <Reference Include="System.Web.ApplicationServices" />
+        <Reference Include="System.ComponentModel.DataAnnotations" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Data.DataSetExtensions" />
+        <Reference Include="System.Xml" />
+        <Reference Include="System.Xml.Linq" />
+        <Reference Include="System.Web" />
+        <Reference Include="System.Web.Extensions" />
+        <Reference Include="System.Web.Abstractions" />
+        <Reference Include="System.Web.Routing" />
+        <Reference Include="System.Configuration" />
+        <Reference Include="System.Web.Services" />
+        <Reference Include="System.EnterpriseServices" />
+        <Reference Include="System.Net.Http" />
+        <Reference Include="System.Net.Http.WebRequest" />
+      </ItemGroup>
+      <ItemGroup>
+        <PackageReference Include="Antlr">
+          <Version>3.5.0.2</Version>
+        </PackageReference>
+        <PackageReference Include="EntityFramework">
+          <Version>6.2.0</Version>
+        </PackageReference>
+        <PackageReference Include="bootstrap">
+          <Version>4.2.1</Version>
+        </PackageReference>
+        <PackageReference Include="jQuery">
+          <Version>3.3.1</Version>
+        </PackageReference>
+        <PackageReference Include="jQuery.Validation">
+          <Version>1.17.0</Version>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNet.Mvc">
+          <Version>5.2.7</Version>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNet.Razor">
+          <Version>3.2.7</Version>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNet.TelemetryCorrelation">
+          <Version>1.0.5</Version>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNet.Web.Optimization">
+          <Version>1.1.3</Version>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNet.WebApi">
+          <Version>5.2.7</Version>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNet.WebApi.Client">
+          <Version>5.2.7</Version>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNet.WebApi.Core">
+          <Version>5.2.7</Version>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNet.WebApi.WebHost">
+          <Version>5.2.7</Version>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNet.WebPages">
+          <Version>3.2.7</Version>
+        </PackageReference>
+        <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
+          <Version>2.0.1</Version>
+        </PackageReference>
+        <PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation">
+          <Version>3.2.11</Version>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Web.Infrastructure">
+          <Version>1.0.0</Version>
+        </PackageReference>
+        <PackageReference Include="Modernizr">
+          <Version>2.8.3</Version>
+        </PackageReference>
+        <PackageReference Include="Newtonsoft.Json">
+          <Version>12.0.1</Version>
+        </PackageReference>
+        <PackageReference Include="System.Diagnostics.DiagnosticSource">
+          <Version>4.5.1</Version>
+        </PackageReference>
+        <PackageReference Include="WebGrease">
+          <Version>1.6.0</Version>
+        </PackageReference>
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Target Name="_HandlePackageFileConflicts" />
+
+
+</Project>
