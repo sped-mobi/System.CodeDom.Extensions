@@ -1,7 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    
     <IncludeCommonReferences>true</IncludeCommonReferences>
   </PropertyGroup>
 
@@ -27,12 +26,6 @@
 
   <ItemGroup>
     <Compile Remove="CodeDom\CSharp\Indentation.cs" />
-  </ItemGroup>
-
-
-
-  <ItemGroup>
-    <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
   </ItemGroup>
 
 

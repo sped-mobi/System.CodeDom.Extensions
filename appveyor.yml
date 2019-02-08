@@ -1,0 +1,18 @@
+version: 1.0.{build}
+configuration: Debug
+platform: Any CPU
+build_script:
+- cmd: >-
+    @echo off
+
+    dotnet build
+
+    echo Complete!
+
+    exit /b
+deploy:
+- provider: NuGet
+  server: https://www.myget.org/F/ollon-buildtools/api/v2/package
+  api_key:
+    secure: V2NEKChHJzhrkA/4KGHfAmkf+BijIbODnmzNgHMem3VTglZzCzb4slOpNnMBtrmu
+  skip_symbols: true
