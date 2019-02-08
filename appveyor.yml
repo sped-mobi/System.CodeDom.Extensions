@@ -1,18 +1,26 @@
 version: 1.0.{build}
+max_jobs: 8
+image: Visual Studio 2017
 configuration: Debug
 platform: Any CPU
+environment:
+  appveyor_configuration: Debug
 build_script:
 - cmd: >-
     @echo off
 
+    dotnet clean
+
+    dotnet restore
+
     dotnet build
+artifacts:
+- path: '*.nupkg'
+  name: NuGet Package
+deploy_script:
+- cmd: >-
+    for /f "tokens=*" %%i IN ('dir bin\Debug\*.nupkg /s /b') DO (
 
-    echo Complete!
+    dotnet nuget push "%%i" -k d3cb76e3-890c-4874-a882-267e518aee3d -s https://www.myget.org/F/ollon-buildtools/
 
-    exit /b
-deploy:
-- provider: NuGet
-  server: https://www.myget.org/F/ollon-buildtools/api/v2/package
-  api_key:
-    secure: V2NEKChHJzhrkA/4KGHfAmkf+BijIbODnmzNgHMem3VTglZzCzb4slOpNnMBtrmu
-  skip_symbols: true
+    )
