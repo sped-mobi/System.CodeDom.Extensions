@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/9xqjcw2vdynq796u?svg=true)](https://ci.appveyor.com/project/IObsequious/system-codedom-extensions)
+
 # Introduction 
 TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
 
