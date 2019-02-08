@@ -14,9 +14,7 @@ build_script:
     dotnet restore
 
     dotnet build
-artifacts:
-- path: '*.nupkg'
-  name: NuGet Package
+
 artifacts:
 - path: artifacts\*.nupkg
   name: NuGet Package
