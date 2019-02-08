@@ -256,6 +256,16 @@ Copyright (c) Ollon, LLC. All rights reserved.
   <Target Name="VSIXNameProjectOutputGroup" Condition="'$(CreateVsixContainer)' == 'false'" />
 
 
+  <Target Name="CopyNuPkgToArtifactsDirectory" AfterTargets="Pack" Condition="'$(GeneratePackageOnBuild)'=='true'">
+    <ItemGroup>
+      <NuGetFileToCopy Include="$(PackageOutputAbsolutePath)\*.nupkg" />
+    </ItemGroup>
+    <RemoveDir Directories="$(SolutionDir)artifacts\" Condition="Exists('$(SolutionDir)artifacts\')" ContinueOnError="true" />
+    <MakeDir Directories="$(SolutionDir)artifacts\" Condition="!Exists('$(SolutionDir)artifacts\')" ContinueOnError="true" />
+    <Copy SourceFiles="@(NuGetFileToCopy)" DestinationFolder="$(SolutionDir)artifacts\" ContinueOnError="true" />
+  </Target>
+
+
 
   <Choose>
     <When Condition="'$(IncludeWebApiReferences)' == 'true'">
