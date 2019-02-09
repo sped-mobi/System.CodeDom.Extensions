@@ -117,7 +117,7 @@ Copyright (c) Ollon, LLC. All rights reserved.
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)'==''">15.0</VisualStudioVersion>
     <BuildNumber>0</BuildNumber>
-    <RevisionNumber>0</RevisionNumber>
+    <RevisionNumber>1</RevisionNumber>
     <BuildVersion>1.0.$(RevisionNumber).$(BuildNumber)</BuildVersion>
     <AssemblyBuildVersion>$(BuildVersion)</AssemblyBuildVersion>
   </PropertyGroup>

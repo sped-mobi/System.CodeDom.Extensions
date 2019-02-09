@@ -255,6 +255,21 @@ Copyright (c) Ollon, LLC. All rights reserved.
   <Target Name="VSIXIdentifierProjectOutputGroup" Condition="'$(CreateVsixContainer)' == 'false'" />
   <Target Name="VSIXNameProjectOutputGroup" Condition="'$(CreateVsixContainer)' == 'false'" />
 
+  <PropertyGroup>
+    <CleanDependsOn>
+      $(CleanDependsOn);
+    DeepCleanBeforeBuild;
+    </CleanDependsOn>
+  </PropertyGroup>
+
+
+
+  <Target Name="DeepCleanBeforeBuild">
+    <ItemGroup>
+      <RemoveFiles Include="$(OutputPath)\**\*.nupkg" />
+    </ItemGroup>
+    <Delete Files="@(RemoveFiles)" ContinueOnError="true" />
+  </Target>
 
   <Target Name="CopyNuPkgToArtifactsDirectory" AfterTargets="Pack" Condition="'$(GeneratePackageOnBuild)'=='true'">
     <ItemGroup>

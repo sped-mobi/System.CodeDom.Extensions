@@ -1,4 +1,10 @@
-﻿using System.CodeDom.Compiler;
+﻿// -----------------------------------------------------------------------
+// <copyright file="CSharpCodeGenerator.cs" company="sped.mobi">
+//     Copyright (c) 2019 Brad Marshall. All rights reserved.
+// </copyright>
+// -----------------------------------------------------------------------
+
+using System.CodeDom.Compiler;
 using System.Collections;
 using System.Diagnostics;
 using System.Globalization;
@@ -6,6 +12,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace System.CodeDom.CSharp
 {
@@ -16,6 +23,23 @@ namespace System.CodeDom.CSharp
         private bool generatingForLoop;
 
         protected override string NullToken => "null";
+
+        public void Dispose()
+        {
+
+        }
+
+        public void Flush()
+        {
+            Output.Flush();
+        }
+
+        public async Task FlushAsync()
+        {
+            await Output
+                .FlushAsync()
+                .ConfigureAwait(false);
+        }
 
         public virtual void GenerateBreakSwitchSectionStatement(CodeBreakSwitchSectionStatement e)
         {
@@ -77,16 +101,6 @@ namespace System.CodeDom.CSharp
             }
         }
 
-        public virtual void GenerateCodeFromType(CodeTypeDeclaration e, TextWriter w, CodeGeneratorOptions o)
-        {
-            if (o is CSharpCodeGeneratorOptions oo)
-            {
-                SetOptions(oo);
-            }
-
-            ((ICodeGenerator)this).GenerateCodeFromType(e, w, o);
-        }
-
         public virtual void GenerateCodeFromNamespace(CodeNamespace e, TextWriter w, CodeGeneratorOptions o)
         {
             if (o is CSharpCodeGeneratorOptions oo)
@@ -95,6 +109,16 @@ namespace System.CodeDom.CSharp
             }
 
             ((ICodeGenerator)this).GenerateCodeFromNamespace(e, w, o);
+        }
+
+        public virtual void GenerateCodeFromType(CodeTypeDeclaration e, TextWriter w, CodeGeneratorOptions o)
+        {
+            if (o is CSharpCodeGeneratorOptions oo)
+            {
+                SetOptions(oo);
+            }
+
+            ((ICodeGenerator)this).GenerateCodeFromType(e, w, o);
         }
 
         public virtual void GenerateCodeSwitchStatement(CodeSwitchStatement e)
@@ -247,7 +271,7 @@ namespace System.CodeDom.CSharp
 
                 Output.WriteLine(" {");
                 Indent++;
-                OutputExpressionList(init, true );
+                OutputExpressionList(init, true);
                 Indent--;
                 Output.Write("}");
             }
@@ -686,8 +710,7 @@ namespace System.CodeDom.CSharp
             generatingForLoop = false;
             Indent++;
             GenerateStatements(e.Statements);
-            Indent--;
-            Output.WriteLine("}");
+            CloseBlock();
         }
 
         protected override void GenerateLabeledStatement(CodeLabeledStatement e)
@@ -771,8 +794,7 @@ namespace System.CodeDom.CSharp
                 OutputStartingBrace();
                 Indent++;
                 GenerateStatements(e.Statements);
-                Indent--;
-                Output.WriteLine("}");
+                CloseBlock();
             }
             else
             {
@@ -843,8 +865,7 @@ namespace System.CodeDom.CSharp
         {
             if (!string.IsNullOrEmpty(e.Name))
             {
-                Indent--;
-                Output.WriteLine("}");
+                CloseBlock();
             }
         }
 
@@ -1060,8 +1081,7 @@ namespace System.CodeDom.CSharp
         {
             if (!IsCurrentDelegate)
             {
-                Indent--;
-                Output.WriteLine("}");
+                CloseBlock();
             }
         }
 
@@ -1081,8 +1101,6 @@ namespace System.CodeDom.CSharp
                         break;
                     case TypeAttributes.NotPublic:
                         Output.Write("internal ");
-                        break;
-                    default:
                         break;
                 }
 
@@ -1361,8 +1379,6 @@ namespace System.CodeDom.CSharp
 
         protected override string QuoteSnippetString(string value)
         {
-
-
             return '"' + value + '"';
         }
 
@@ -1727,7 +1743,7 @@ namespace System.CodeDom.CSharp
                                 break;
                             case '`':
                                 sb.Append(CreateEscapedIdentifier(baseType.Substring(lastIndex, i - lastIndex)));
-                                i++;    
+                                i++;
                                 int numTypeArgs = 0;
                                 while (i < baseType.Length && baseType[i] >= '0' && baseType[i] <= '9')
                                 {
@@ -1936,19 +1952,7 @@ namespace System.CodeDom.CSharp
         private void SetOptions(CSharpCodeGeneratorOptions generatorOptions)
         {
             CSharpOptions = generatorOptions;
-        }
 
-        public void Flush()
-        {
-            Output.Flush();
-        }
-
-        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
-        public void Dispose()
-        {
-            Output.Flush();
-
-            Output.Dispose();
         }
     }
 }
