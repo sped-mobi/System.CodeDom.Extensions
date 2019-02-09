@@ -1895,6 +1895,10 @@ namespace System.CodeDom.CSharp
             {
                 Output.Write("enum ");
             }
+            else if (e.IsInterface)
+            {
+                Output.Write("interface ");
+            }
             else
             {
                 switch (attributes & TypeAttributes.ClassSemanticsMask)
