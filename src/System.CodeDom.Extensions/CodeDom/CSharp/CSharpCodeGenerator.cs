@@ -229,10 +229,10 @@ namespace System.CodeDom.CSharp
 
         protected override string CreateEscapedIdentifier(string value)
         {
-            if (IsKeyword(value) || IsPrefixTwoUnderscore(value))
-            {
-                return "@" + value;
-            }
+            //if (IsKeyword(value) || IsPrefixTwoUnderscore(value))
+            //{
+            //    return "@" + value;
+            //}
 
             return value;
         }
