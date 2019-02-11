@@ -117,8 +117,8 @@ Copyright (c) Ollon, LLC. All rights reserved.
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)'==''">15.0</VisualStudioVersion>
     <BuildNumber>0</BuildNumber>
-    <RevisionNumber>3</RevisionNumber>
-    <BuildVersion>1.0.$(RevisionNumber).$(BuildNumber)</BuildVersion>
+    <RevisionNumber>0</RevisionNumber>
+    <BuildVersion>2.0.$(RevisionNumber).$(BuildNumber)</BuildVersion>
     <AssemblyBuildVersion>$(BuildVersion)</AssemblyBuildVersion>
   </PropertyGroup>
   
@@ -143,9 +143,9 @@ Copyright (c) Ollon, LLC. All rights reserved.
     <InformationalVersion Condition="'$(InformationalVersion)' == ''">$(AssemblyBuildVersion)</InformationalVersion>
     <AssemblyFileVersion Condition="'$(AssemblyFileVersion)' == ''">$(AssemblyBuildVersion)</AssemblyFileVersion>
     <PackageReleaseNotes Condition="'$(PackageReleaseNotes)' == ''">$(MSBuildProjectName)</PackageReleaseNotes>
-    <PackageProjectUrl Condition="'$(PackageProjectUrl)' == ''">https://aka.ms/vsextensibility</PackageProjectUrl>
-    <PackageLicenseUrl Condition="'$(PackageLicenseUrl)' == ''">https://aka.ms/pexunj</PackageLicenseUrl>
-    <PackageIconUrl Condition="'$(PackageIconUrl)' == ''">https://aka.ms/vsextensibilityicon</PackageIconUrl>
+    <PackageProjectUrl Condition="'$(PackageProjectUrl)' == ''">https://github.com/sped-mobi/System.CodeDom.Extensions</PackageProjectUrl>
+    <PackageLicenseUrl Condition="'$(PackageLicenseUrl)' == ''">https://raw.githubusercontent.com/sped-mobi/System.CodeDom.Extensions/master/License.txt</PackageLicenseUrl>
+    <PackageIconUrl Condition="'$(PackageIconUrl)' == ''">https://marketplace.visualstudio.com/favicon.ico</PackageIconUrl>
     <PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 

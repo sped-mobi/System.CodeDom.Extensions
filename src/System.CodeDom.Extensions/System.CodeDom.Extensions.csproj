@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <IncludeCommonReferences>true</IncludeCommonReferences>
+    <IncludeCommonReferences>false</IncludeCommonReferences>
   </PropertyGroup>
 
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
@@ -9,7 +9,7 @@
 
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseUrl>https://raw.githubusercontent.com/sped-mobi/System.CodeDom.Extensions/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/sped-mobi/System.CodeDom.Extensions</PackageProjectUrl>
@@ -25,7 +25,7 @@
 
 
   <ItemGroup>
-    <Compile Remove="CodeDom\CSharp\Indentation.cs" />
+    <PackageReference Include="System.CodeDom" Version="4.4.0" />
   </ItemGroup>
 
 
@@ -44,6 +44,7 @@
     <EmbeddedResource Update="CodeDom\CSharp\SR.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SR.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>System</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
 

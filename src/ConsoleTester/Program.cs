@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom;
+using System.CodeDom.Compiler;
 using System.CodeDom.CSharp;
 using System.IO;
 using System.Reflection;
@@ -37,6 +38,13 @@ namespace ConsoleTester
                                 IsInterface = false,
                                 TypeAttributes = TypeAttributes.Public | TypeAttributes.Abstract,
                                 Name = "MyClass",
+                                CustomAttributes =
+                                {
+                                    new CodeAttributeDeclaration
+                                    {
+                                        Name = "MyAttribute"
+                                    }
+                                },
                                 UserData =
                                 {
                                     ["IsStatic"] = true
@@ -47,6 +55,62 @@ namespace ConsoleTester
                                 },
                                 Members =
                                 {
+                                    new CodeConstructor
+                                    {
+                                        Name = "MyClass",
+                                        Comments =
+                                        {
+                                            new CodeCommentStatement("This is a doc comment on a constructor.", true)
+                                        },
+                                        Attributes = MemberAttributes.Public,
+                                        BaseConstructorArgs =
+                                        {
+                                            new CodePrimitiveExpression(false)
+                                        },
+                                        Parameters =
+                                        {
+                                            new CodeParameterDeclarationExpression
+                                            {
+                                                
+                                                Name = "name",
+                                                Type = new CodeTypeReference(typeof(string)),
+                                                
+                                            }
+                                        },
+                                        CustomAttributes =
+                                        {
+                                            new CodeAttributeDeclaration
+                                            {
+                                                Name = "MyAttribute"
+                                            }
+                                        },
+                                    },
+                                    new CodeMemberMethod
+                                    {
+                                        Name = "MyMethod",
+                                        ReturnType = new CodeTypeReference(typeof(void)),
+                                        Parameters =
+                                        {
+                                            new CodeParameterDeclarationExpression
+                                            {
+
+                                                Name = "name",
+                                                Type = new CodeTypeReference(typeof(string)),
+
+                                            }
+                                        },
+                                        CustomAttributes =
+                                        {
+                                            new CodeAttributeDeclaration
+                                            {
+                                                Name = "MyAttribute"
+                                            }
+                                        },
+                                        Comments =
+                                        {
+                                            new CodeCommentStatement("This is a doc comment on a method.", true)
+                                        },
+                                    },
                                     new CodeMemberProperty
                                     {
                                         Name = "Name",
@@ -57,7 +121,14 @@ namespace ConsoleTester
                                         Comments =
                                         {
                                             new CodeCommentStatement("This is a doc comment on a property.", true)
-                                        }
+                                        },
+                                        CustomAttributes =
+                                        {
+                                            new CodeAttributeDeclaration
+                                            {
+                                                Name = "MyAttribute"
+                                            }
+                                        },
                                     },
                                     new CodeMemberProperty
                                     {
@@ -83,14 +154,14 @@ namespace ConsoleTester
             {
                 CSharpCodeProvider provider = new CSharpCodeProvider();
                 CSharpCodeGenerator generator = new CSharpCodeGenerator();
+                generator.MoveUsingsOutsideNamespace = true;
+                generator.MultiLineDocComments = true;
 
-                CSharpCodeGeneratorOptions options = new CSharpCodeGeneratorOptions
+                CodeGeneratorOptions options = new CodeGeneratorOptions
                 {
                     BracingStyle = "C",
                     BlankLinesBetweenMembers = false,
-                    IndentString = "    ",
-                    MultilineDocComments = true,
-                    MoveUsingsOutsideNamespace = true
+                    IndentString = "    "
                 };
 
                 generator.GenerateCodeFromCompileUnit(unit, writer, options);

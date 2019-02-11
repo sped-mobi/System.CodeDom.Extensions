@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace System.CodeDom.CSharp {
+namespace System {
     using System;
     
     

@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <IncludeCommonReferences>true</IncludeCommonReferences>
+    <IncludeCommonReferences>false</IncludeCommonReferences>
   </PropertyGroup>
 
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
@@ -10,13 +10,20 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
 
 
 
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+
+
+
+
+  <ItemGroup>
+    <PackageReference Include="System.CodeDom" Version="4.5.0" />
+  </ItemGroup>
 
 
 
