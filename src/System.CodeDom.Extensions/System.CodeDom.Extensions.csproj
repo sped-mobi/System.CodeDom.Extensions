@@ -1,6 +1,10 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net472'">
+    <IncludeCommonReferences>true</IncludeCommonReferences>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <IncludeCommonReferences>false</IncludeCommonReferences>
   </PropertyGroup>
 
@@ -9,7 +13,7 @@
 
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseUrl>https://raw.githubusercontent.com/sped-mobi/System.CodeDom.Extensions/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/sped-mobi/System.CodeDom.Extensions</PackageProjectUrl>
@@ -17,14 +21,16 @@
     <RepositoryUrl>https://github.com/sped-mobi/System.CodeDom.Extensions</RepositoryUrl>
     <PackageTags>CodeDom</PackageTags>
     <Description>
-    Implementation of CodeGenerator under the System.CodeDom.CSharp namespace.
-    System.CodeDom.CSharp.CSharpCodeGenerator
+Commonly used types:
+
+System.CodeDom.CSharp.CSharpCodeGenerator
+System.CodeDom.CSharp.CodeGeneratorBase
     </Description>
   </PropertyGroup>
 
 
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <PackageReference Include="System.CodeDom" Version="4.4.0" />
   </ItemGroup>
 
