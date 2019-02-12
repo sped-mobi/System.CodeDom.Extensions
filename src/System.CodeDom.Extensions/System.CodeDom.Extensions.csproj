@@ -4,7 +4,7 @@
     <IncludeCommonReferences>true</IncludeCommonReferences>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+  <PropertyGroup Condition="'$(TargetFramework)'!='net472'">
     <IncludeCommonReferences>false</IncludeCommonReferences>
   </PropertyGroup>
 
@@ -13,7 +13,7 @@
 
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net472;netcoreapp2.2</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseUrl>https://raw.githubusercontent.com/sped-mobi/System.CodeDom.Extensions/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/sped-mobi/System.CodeDom.Extensions</PackageProjectUrl>
@@ -30,7 +30,7 @@ System.CodeDom.CSharp.CodeGeneratorBase
 
 
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+  <ItemGroup Condition="'$(TargetFramework)'!='net472'">
     <PackageReference Include="System.CodeDom" Version="4.4.0" />
   </ItemGroup>
 
