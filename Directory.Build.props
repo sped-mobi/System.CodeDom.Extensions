@@ -117,7 +117,7 @@ Copyright (c) Ollon, LLC. All rights reserved.
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)'==''">15.0</VisualStudioVersion>
     <BuildNumber>0</BuildNumber>
-    <RevisionNumber>0</RevisionNumber>
+    <RevisionNumber>1</RevisionNumber>
     <BuildVersion>2.0.$(RevisionNumber).$(BuildNumber)</BuildVersion>
     <AssemblyBuildVersion>$(BuildVersion)</AssemblyBuildVersion>
   </PropertyGroup>
@@ -133,8 +133,8 @@ Copyright (c) Ollon, LLC. All rights reserved.
     <IncludeBuildOutput Condition="'$(IncludeBuildOutput)' == ''">true</IncludeBuildOutput>
     <CopyLocalLockFileAssemblies Condition="'$(CopyLocalLockFileAssemblies)' == ''">true</CopyLocalLockFileAssemblies>
     <Authors Condition="'$(Authors)'==''">Brad R. Marshall</Authors>
-    <Company Condition="'$(Company)'==''">Ollon, LLC</Company>
-    <Copyright Condition="'$(Copyright)'==''">%A9 $([System.DateTime]::Now.Year) $(Company). All Rights Reserved.</Copyright>
+    <Company Condition="'$(Company)'==''">sped.mobi</Company>
+    <Copyright Condition="'$(Copyright)'==''">%A9 $([System.DateTime]::Now.Year) $(Authors). All Rights Reserved.</Copyright>
     <Description Condition="'$(Description)'==''">$(AssemblyName)</Description>
     <Product Condition="'$(Product)'==''">$(AssemblyName)</Product>
     <AssemblyTitle Condition="'$(AssemblyTitle)'==''">$(AssemblyName)</AssemblyTitle>

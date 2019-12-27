@@ -12,7 +12,7 @@ using System.Text;
 
 namespace System.CodeDom.CSharp
 {
-    public class CSharpCodeGenerator : CodeGeneratorBase
+    public class CSharpGenerator : CodeGeneratorBase
     {
         protected bool GeneratingForLoop { get; set; }
 
@@ -26,7 +26,7 @@ namespace System.CodeDom.CSharp
         {
             Indent--;
             Output.WriteLine("}");
-            
+
         }
 
         protected override void GenerateArgumentReferenceExpression(CodeArgumentReferenceExpression e)
@@ -841,7 +841,7 @@ namespace System.CodeDom.CSharp
             Output.Write("try");
             OpenBlock();
             GenerateStatements(e.TryStatements);
-            
+
             CodeCatchClauseCollection catches = e.CatchClauses;
             if (catches.Count > 0)
             {

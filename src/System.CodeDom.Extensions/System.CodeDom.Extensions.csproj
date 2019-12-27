@@ -8,14 +8,18 @@
     <IncludeCommonReferences>false</IncludeCommonReferences>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)'!='net472'">
+    <PackageReference Include="System.CodeDom" Version="4.7.0" />
+  </ItemGroup>
+
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
 
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net472;netcoreapp2.2</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net472;netcoreapp3.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/sped-mobi/System.CodeDom.Extensions/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/sped-mobi/System.CodeDom.Extensions</PackageProjectUrl>
     <PackageIconUrl>https://marketplace.visualstudio.com/favicon.ico</PackageIconUrl>
     <RepositoryUrl>https://github.com/sped-mobi/System.CodeDom.Extensions</RepositoryUrl>
@@ -23,16 +27,15 @@
     <Description>
 Commonly used types:
 
-System.CodeDom.CSharp.CSharpCodeGenerator
+System.CodeDom.CSharp.CSharpGenerator
 System.CodeDom.CSharp.CodeGeneratorBase
     </Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
 
 
-  <ItemGroup Condition="'$(TargetFramework)'!='net472'">
-    <PackageReference Include="System.CodeDom" Version="4.4.0" />
-  </ItemGroup>
+
 
 
 
@@ -54,6 +57,10 @@ System.CodeDom.CSharp.CodeGeneratorBase
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="CodeDom\**\*.cs" PackagePath="src\"/>
+    <Content Include="CodeDom\**\*.resx" PackagePath="src\"/>
+  </ItemGroup>
 
 
 

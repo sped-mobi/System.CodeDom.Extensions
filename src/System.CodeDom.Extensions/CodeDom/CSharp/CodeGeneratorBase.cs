@@ -10,7 +10,6 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using System.Collections.Generic;
 
 namespace System.CodeDom.CSharp
 {
@@ -1160,7 +1159,7 @@ namespace System.CodeDom.CSharp
                     switch (attributes & MemberAttributes.AccessMask)
                     {
                         case MemberAttributes.Family:
-                        //case MemberAttributes.Public:
+                            //case MemberAttributes.Public:
                             Output.Write("virtual ");
                             break;
                     }
@@ -1981,7 +1980,7 @@ namespace System.CodeDom.CSharp
         {
         }
 
-        protected  virtual string GetTypeArgumentsOutput(CodeTypeReferenceCollection typeArguments)
+        protected virtual string GetTypeArgumentsOutput(CodeTypeReferenceCollection typeArguments)
         {
             StringBuilder sb = new StringBuilder(128);
             GetTypeArgumentsOutput(typeArguments, 0, typeArguments.Count, sb);
