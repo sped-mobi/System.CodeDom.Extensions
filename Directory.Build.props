@@ -1,170 +1,72 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-*********************************************************************************************** 
-Directory.Build.props
-
-WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
-          created a backup copy.  Incorrect changes to this file will make it
-          impossible to load or build your projects from the command-line or the IDE.
-
-Copyright (c) Ollon, LLC. All rights reserved. 
-***********************************************************************************************
--->
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
+﻿<Project>
   <PropertyGroup>
-    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <DotNetBuildFromSource>true</DotNetBuildFromSource>
+    <DotNetFinalVersionKind>release</DotNetFinalVersionKind>
+    <DisableArcadeTestFramework>true</DisableArcadeTestFramework>
+    <UsingToolXliff Condition="'$(UsingToolXliff)'==''">false</UsingToolXliff>
+    <UsingToolVsSDK Condition="'$(UsingToolVsSDK)'==''">false</UsingToolVsSDK>
+    <UsingToolNetFrameworkReferenceAssemblies Condition="'$(MSBuildRuntimeType)'=='Core'">true</UsingToolNetFrameworkReferenceAssemblies>
+    <IsWpfTempProject>false</IsWpfTempProject>
+    <IsWpfTempProject Condition="$(MSBuildProjectName.EndsWith('_wpftmp'))">true</IsWpfTempProject>
   </PropertyGroup>
 
   <PropertyGroup>
-    <!--<TargetFramework>netcoreapp2.2</TargetFramework>-->
-    <UserSecretsId>AspNetCoreWebExample</UserSecretsId>
-    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
-    <RootNamespace>System</RootNamespace>
-    <DefineConstants>DEBUG;TRACE;$(DefineConstants)</DefineConstants>
-    <Configuration>Debug</Configuration>
-    <Platform>AnyCPU</Platform>
-    <PlatformTarget>$(Platform)</PlatformTarget>
+    <!-- Respect environment variable for the NuGet Packages Root if set; otherwise, use the current default location -->
+    <NuGetPackageRoot Condition="'$(NuGetPackageRoot)' == ''">$(NUGET_PACKAGES)</NuGetPackageRoot>
+    <NuGetPackageRoot Condition="'$(NuGetPackageRoot)' == '' AND '$(OS)' == 'Windows_NT'">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+    <NuGetPackageRoot Condition="'$(NuGetPackageRoot)' == '' AND '$(OS)' != 'Windows_NT'">$([System.Environment]::GetFolderPath(SpecialFolder.Personal))\.nuget\packages\</NuGetPackageRoot>
+    <NuGetPackageRoot Condition="!HasTrailingSlash('$(NuGetPackageRoot)')">$(NuGetPackageRoot)\</NuGetPackageRoot>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GitHubOrganization>sped-mobi</GitHubOrganization>
+    <GitHubRepositoryBranch>master</GitHubRepositoryBranch>
+    <GitHubRepositoryName>openapi-codegen</GitHubRepositoryName>
+    <GitHubBaseRepositoryUrl>https://github.com/$(GitHubOrganization)/$(GitHubRepositoryName)</GitHubBaseRepositoryUrl>
+    <GitHubRepositoryUrl>$(GitHubBaseRepositoryUrl).git</GitHubRepositoryUrl>
+    <GitHubPackageProjectUrl>$(GitHubBaseRepositoryUrl)/tree/$(GitHubRepositoryBranch)</GitHubPackageProjectUrl>
+  </PropertyGroup>
 
-  <ItemGroup>
-    <DotNetCoreRuntime Include="$(MicrosoftNETCoreApp20PackageVersion)" />
-    <DotNetCoreRuntime Include="$(MicrosoftNETCoreApp21PackageVersion)" />
-    <DotNetCoreRuntime Include="$(MicrosoftNETCoreApp22PackageVersion)" />
-  </ItemGroup>
-
-  <PropertyGroup Label="RestoreSources">
-    <RestoreSources>$(DotNetRestoreSources)</RestoreSources>
+  <PropertyGroup>
+    <OldRestoreSources>$(RestoreSources)</OldRestoreSources>
     <RestoreSources>
       https://api.nuget.org/v3/index.json;
+      https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json;
+      https://www.myget.org/F/sped-mobi/api/v3/index.json;
+      https://dotnetfeed.blob.core.windows.net/dotnet-tools-internal/index.json;
       https://www.myget.org/F/ollon-buildtools/api/v3/index.json;
-      https://dotnet.myget.org/F/dotnet-core/api/v3/index.json;
-      https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json;
-      https://dotnet.myget.org/F/aspnetcore-tools/api/v3/index.json;
-      https://dotnet.myget.org/F/msbuild/api/v3/index.json;
-      https://dotnet.myget.org/F/roslyn/api/v3/index.json;
-      https://vside.myget.org/F/vssdk/api/v3/index.json;
-      https://vside.myget.org/F/vsmac/api/v3/index.json;
-      https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json;
-      $(RestoreSources)
+      $(OldRestoreSources)
     </RestoreSources>
   </PropertyGroup>
 
+
+  <Import Project="Sdk.props" Sdk="Microsoft.DotNet.Arcade.Sdk" />
+
   <PropertyGroup>
-    <SolutionDir>$(MSBuildThisFileDirectory)</SolutionDir>
+
+
+    <IsShipping>false</IsShipping>
+
+    <Authors>Brad Marshall</Authors>
+    <Owners>$(Authors)</Owners>
+    <Company>$(Authors)</Company>
+    <Product>$(AssemblyName)</Product>
+    <Copyright>%A9 $([System.DateTime]::Now.Year) $(Company). All Rights Reserved.</Copyright>
+
+    <RepositoryUrl>$(GitHubRepositoryUrl)</RepositoryUrl>
+    <PackageIconUrl>https://go.microsoft.com/fwlink/?LinkID=288859</PackageIconUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>$(GitHubPackageProjectUrl)</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <RepositoryDirectory>$(SolutionDir)</RepositoryDirectory>
-    <RepositoryDirectory Condition="!HasTrailingSlash('$(RepositoryDirectory)')">$(RepositoryDirectory)\</RepositoryDirectory>
-    <OutputPath>$(RepositoryDirectory)bin\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
-    <BaseIntermediateOutputPath>$(RepositoryDirectory)bin\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
-    <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\</IntermediateOutputPath>
-    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-    <RuntimeIdentifiers Condition="'$(RuntimeIdentifiers)'==''">win</RuntimeIdentifiers>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <NoWarn>CS1573;CS1030;CS1591;MSB3277;CS0649;IDE0001;IDE0003;IDE0008;CS00067;$(NoWarn)</NoWarn>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>$(RepositoryDirectory)build\strong name keys\SolutionKey.snk</AssemblyOriginatorKeyFile>
+
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <LangVersion>latest</LangVersion>
+
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
-
-  <PropertyGroup>
-    <SolutionKeyPath>$(RepositoryDirectory)build\strong name keys\SolutionKey.snk</SolutionKeyPath>
-    <SharedLibPath>$(RepositoryDirectory)build\strong name keys\35MSSharedLib1024.snk</SharedLibPath>
-  </PropertyGroup>
-
-
-  
-  <PropertyGroup>
-    <!-- All projects in this repository target the same framework by default -->
-    <TargetFramework Condition="'$(TargetFramework)'==''">netcoreapp2.2</TargetFramework>
-
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-
-    <VSSDKTargetPlatformRegRootSuffix Condition="'$(RootSuffix)' != ''">$(RootSuffix)</VSSDKTargetPlatformRegRootSuffix>
-    <VSSDKTargetPlatformRegRootSuffix Condition="'$(VSSDKTargetPlatformRegRootSuffix)' == ''">Exp</VSSDKTargetPlatformRegRootSuffix>
-
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <ForceGenerationOfBindingRedirects>true</ForceGenerationOfBindingRedirects>
-  </PropertyGroup>
-  
-  <Choose>
-    <When Condition="'$(UseMicrosoftPublicKeyFile)' != 'true'">
-      <PropertyGroup>
-        <SignAssembly >true</SignAssembly>
-        <PublicKey>0024000004800000940000000602000000240000525341310004000001000100594739ec1ff22c3d82f18aa1e5b6c9f2138b519011246fa0c3104118412f09dffbb0e0c02d34ee90bbdf8c78ffb04840bc7be184e91ca9b97e99b251b850cbbd7745cd370d39bddc6d671c9bfb609e38832c4172438510fa7a2d697775d120289c46c808ff4ebe5ac4c3c4556d95039612bfa53d3a1c20390823131da28cac96</PublicKey>
-        <AssemblyOriginatorKeyFile>$([System.IO.Path]::GetFullPath('$(SolutionKeyPath)'))</AssemblyOriginatorKeyFile>
-        <PublicKeyToken>95731728661dcd50</PublicKeyToken>
-        <PublicSign>false</PublicSign>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <SignAssembly>true</SignAssembly>
-        <RoslynPublicKey>0024000004800000940000000602000000240000525341310004000001000100b5fc90e7027f67871e773a8fde8938c81dd402ba65b9201d60593e96c492651e889cc13f1415ebb53fac1131ae0bd333c5ee6021672d9718ea31a8aebd0da0072f25d87dba6fc90ffd598ed4da35e44c398c454307e8e33b8426143daec9f596836f97c8f74750e5975c64e2189f45def46b2a2b1247adc3652bf5c308055da9</RoslynPublicKey>
-        <RoslynInternalKey>002400000480000094000000060200000024000052534131000400000100010055e0217eb635f69281051f9a823e0c7edd90f28063eb6c7a742a19b4f6139778ee0af438f47aed3b6e9f99838aa8dba689c7a71ddb860c96d923830b57bbd5cd6119406ddb9b002cf1c723bf272d6acbb7129e9d6dd5a5309c94e0ff4b2c884d45a55f475cd7dba59198086f61f5a8c8b5e601c0edbf269733f6f578fc8579c2</RoslynInternalKey>
-        <AssemblyOriginatorKeyFile>$([System.IO.Path]::GetFullPath('$(SharedLibPath)'))</AssemblyOriginatorKeyFile>
-        <PublicKey>$(RoslynPublicKey)</PublicKey>
-        <PublicKeyToken>31BF3856AD364E35</PublicKeyToken>
-        <PublicSign>true</PublicSign>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
-  
-  <!--              -->
-  <!--   Versions   -->
-  <!--              -->
-  <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)'==''">15.0</VisualStudioVersion>
-    <BuildNumber>0</BuildNumber>
-    <RevisionNumber>1</RevisionNumber>
-    <BuildVersion>2.0.$(RevisionNumber).$(BuildNumber)</BuildVersion>
-    <AssemblyBuildVersion>$(BuildVersion)</AssemblyBuildVersion>
-  </PropertyGroup>
-  
-  <!--                              -->
-  <!--   NuGet Package Properties   -->
-  <!--                              -->
-  <PropertyGroup Label="NuGet Packaging">
-    <NuGetRepositoryDirectory Condition="'$(NuGetRepositoryDirectory)' == ''">$(SolutionDir)..\bin\nuget\</NuGetRepositoryDirectory>
-    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(OutputPath)nuget\</PackageOutputPath>
-    <NoPackageAnalysis Condition="'$(NoPackageAnalysis)' == ''">true</NoPackageAnalysis>
-    <GeneratePackageOnBuild Condition="'$(GeneratePackageOnBuild)' == ''">false</GeneratePackageOnBuild>
-    <IncludeBuildOutput Condition="'$(IncludeBuildOutput)' == ''">true</IncludeBuildOutput>
-    <CopyLocalLockFileAssemblies Condition="'$(CopyLocalLockFileAssemblies)' == ''">true</CopyLocalLockFileAssemblies>
-    <Authors Condition="'$(Authors)'==''">Brad R. Marshall</Authors>
-    <Company Condition="'$(Company)'==''">sped.mobi</Company>
-    <Copyright Condition="'$(Copyright)'==''">%A9 $([System.DateTime]::Now.Year) $(Authors). All Rights Reserved.</Copyright>
-    <Description Condition="'$(Description)'==''">$(AssemblyName)</Description>
-    <Product Condition="'$(Product)'==''">$(AssemblyName)</Product>
-    <AssemblyTitle Condition="'$(AssemblyTitle)'==''">$(AssemblyName)</AssemblyTitle>
-    <AssemblyVersion Condition="'$(AssemblyVersion)' == ''">$(AssemblyBuildVersion)</AssemblyVersion>
-    <PackageVersion Condition="'$(PackageVersion)' == ''">$(AssemblyBuildVersion)</PackageVersion>
-    <InformationalVersion Condition="'$(InformationalVersion)' == ''">$(AssemblyBuildVersion)</InformationalVersion>
-    <AssemblyFileVersion Condition="'$(AssemblyFileVersion)' == ''">$(AssemblyBuildVersion)</AssemblyFileVersion>
-    <PackageReleaseNotes Condition="'$(PackageReleaseNotes)' == ''">$(MSBuildProjectName)</PackageReleaseNotes>
-    <PackageProjectUrl Condition="'$(PackageProjectUrl)' == ''">https://github.com/sped-mobi/System.CodeDom.Extensions</PackageProjectUrl>
-    <PackageLicenseUrl Condition="'$(PackageLicenseUrl)' == ''">https://raw.githubusercontent.com/sped-mobi/System.CodeDom.Extensions/master/License.txt</PackageLicenseUrl>
-    <PackageIconUrl Condition="'$(PackageIconUrl)' == ''">https://marketplace.visualstudio.com/favicon.ico</PackageIconUrl>
-    <PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">true</PackageRequireLicenseAcceptance>
-  </PropertyGroup>
-
-
-  <!--                           -->
-  <!--   TextTemplating -->
-  <!--                           -->
-
-  <PropertyGroup>
-    <TransformOnBuild>true</TransformOnBuild>
-    <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
-    <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
-    <MSBuildInstall>$([MSBuild]::GetRegistryValue(`HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7`, `$(VisualStudioVersion)`))\MSBuild</MSBuildInstall>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildInstall)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-  </PropertyGroup>
-
-  <!--<Import Project="$(VSToolsPath)\TextTemplating\Microsoft.TextTemplating.targets" />-->
-
-
 
   <!--                           -->
   <!--   Developer Environment   -->
@@ -182,67 +84,5 @@ Copyright (c) Ollon, LLC. All rights reserved.
     </When>
   </Choose>
 
-  <PropertyGroup>
-    <EntityFrameworkCoreVersion>2.2.1</EntityFrameworkCoreVersion>
-    <NewtonsoftJsonVersion>12.0.1</NewtonsoftJsonVersion>
-    <NSwagAspNetCoreVersion>12.0.10</NSwagAspNetCoreVersion>
-    <SwashbuckleAspNetCoreVersion>5.0.0-beta</SwashbuckleAspNetCoreVersion>
-    <MicrosoftOpenApiVersion>1.1.2</MicrosoftOpenApiVersion>
-    <MicrosoftOpenApiReadersVersion>1.1.2</MicrosoftOpenApiReadersVersion>
-    <MicrosoftAspNetCoreRazorDesignVersion>2.2.0</MicrosoftAspNetCoreRazorDesignVersion>
-    <MicrosoftAspNetCoreRazorLanguageVersion>2.2.0</MicrosoftAspNetCoreRazorLanguageVersion>
-    <MicrosoftVisualStudioWebCodeGenerationDesignVersion>$(EntityFrameworkCoreVersion)</MicrosoftVisualStudioWebCodeGenerationDesignVersion>
-  </PropertyGroup>
-
-  <!--                           -->
-  <!--   Project Selection       -->
-  <!--                           -->
-  <Choose>
-    <When Condition="'$(WebApiProject)' == 'true'">
-      <PropertyGroup>
-        <IncludeWebApiReferences>true</IncludeWebApiReferences>
-      </PropertyGroup>
-    </When>
-  </Choose>
-
-  <Choose>
-    <When Condition="'$(EFCoreGeneratorProject)' == 'true'">
-      <PropertyGroup>
-        <IncludeEFCoreGeneratorReferences>true</IncludeEFCoreGeneratorReferences>
-      </PropertyGroup>
-    </When>
-  </Choose>
-
-  <Choose>
-    <When Condition="'$(WebServicesProject)' == 'true'">
-      <PropertyGroup>
-        <IncludeWebServicesReferences>true</IncludeWebServicesReferences>
-      </PropertyGroup>
-    </When>
-  </Choose>
-
-  <Target Name="GetEFProjectMetadata" Condition="'$(EFCoreGeneratorProject)'=='true'">
-    <MSBuild Condition=" '$(TargetFramework)' == '' "
-             Projects="$(MSBuildProjectFile)"
-             Targets="GetEFProjectMetadata"
-             Properties="TargetFramework=$(TargetFrameworks.Split(';')[0]);EFProjectMetadataFile=$(EFProjectMetadataFile)" />
-    <ItemGroup Condition=" '$(TargetFramework)' != '' ">
-      <EFProjectMetadata Include="AssemblyName: $(AssemblyName)" />
-      <EFProjectMetadata Include="Language: $(Language)" />
-      <EFProjectMetadata Include="OutputPath: $(OutputPath)" />
-      <EFProjectMetadata Include="Platform: $(Platform)" />
-      <EFProjectMetadata Include="PlatformTarget: $(PlatformTarget)" />
-      <EFProjectMetadata Include="ProjectAssetsFile: $(ProjectAssetsFile)" />
-      <EFProjectMetadata Include="ProjectDir: $(ProjectDir)" />
-      <EFProjectMetadata Include="RootNamespace: $(RootNamespace)" />
-      <EFProjectMetadata Include="RuntimeFrameworkVersion: $(RuntimeFrameworkVersion)" />
-      <EFProjectMetadata Include="TargetFileName: $(TargetFileName)" />
-      <EFProjectMetadata Include="TargetFrameworkMoniker: $(TargetFrameworkMoniker)" />
-    </ItemGroup>
-    <WriteLinesToFile Condition=" '$(TargetFramework)' != '' "
-                      File="$(EFProjectMetadataFile)"
-                      Lines="@(EFProjectMetadata)" />
-  </Target>
-
-
+  <Import Project="eng\VisualStudio.props" Condition="'$(UsingToolVsSDK)'=='true'" />
 </Project>

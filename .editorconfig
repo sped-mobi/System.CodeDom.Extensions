@@ -1,10 +1,14 @@
-# To learn more about .editorconfig see https://aka.ms/editorconfigdocs
 ############################### 
 # Core EditorConfig Options   # 
 ############################### 
 # All files 
 [*] 
-indent_style = space 
+indent_style = space
+
+[*.json]
+indent_size = 2
+
+
 # Code files 
 [*.{cs,csx,vb,vbx}] 
 indent_size = 4 
@@ -39,7 +43,6 @@ dotnet_style_explicit_tuple_names = true:suggestion
 dotnet_style_null_propagation = true:suggestion 
 dotnet_style_coalesce_expression = true:suggestion 
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:silent 
-dotnet_prefer_inferred_tuple_names = true:suggestion 
 dotnet_prefer_inferred_anonymous_type_member_names = true:suggestion 
 dotnet_style_prefer_auto_properties = true:silent 
 dotnet_style_prefer_conditional_expression_over_assignment = true:silent 
@@ -89,7 +92,7 @@ csharp_style_inlined_variable_declaration = true:suggestion
 # C# Formatting Rules         # 
 ############################### 
 # New line preferences 
-csharp_new_line_before_open_brace = all 
+csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true 
 csharp_new_line_before_catch = true 
 csharp_new_line_before_finally = true 
@@ -115,9 +118,26 @@ csharp_space_between_method_call_empty_parameter_list_parentheses = false
 # Wrapping preferences 
 csharp_preserve_single_line_statements = true 
 csharp_preserve_single_line_blocks = true 
-############################### 
-# VB Coding Conventions       # 
-############################### 
-[*.vb] 
-# Modifier preferences 
-visual_basic_preferred_modifier_order = Partial,Default,Private,Protected,Public,Friend,NotOverridable,Overridable,MustOverride,Overloads,Overrides,MustInherit,NotInheritable,Static,Shared,Shadows,ReadOnly,WriteOnly,Dim,Const,WithEvents,Widening,Narrowing,Custom,Async:suggestion 
+
+csharp_style_expression_bodied_properties = false
+
+[*.{csproj,proj,props,targets,msbuildproj}]
+indent_size = 2
+insert_final_newline = true 
+charset = utf-8-bom
+
+[*]
+end_of_line = crlf
+tab_width = unset
+trim_trailing_whitespace = true
+
+[*.{cs,vb}]
+dotnet_separate_import_directive_groups = false
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
+dotnet_style_prefer_inferred_tuple_names = true:suggestion
+
+[*.cs]
+csharp_indent_case_contents_when_block = true
+
+[*.vb]
+visual_basic_preferred_modifier_order = Partial,Default,Private,Protected,Public,Friend,NotOverridable,Overridable,MustOverride,Overloads,Overrides,MustInherit,NotInheritable,Static,Shared,Shadows,ReadOnly,WriteOnly,Dim,Const,WithEvents,Widening,Narrowing,Custom,Async:suggestion:suggestion

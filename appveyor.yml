@@ -1,27 +1,21 @@
 version: 1.0.{build}
-max_jobs: 8
 image: Visual Studio 2017
-configuration: Debug
+configuration: Release
 platform: Any CPU
+
 environment:
-  appveyor_configuration: Debug
-build_script:
-- cmd: >-
-    @echo off
-
-    dotnet clean
-
-    dotnet restore
-
-    dotnet build
+  dotnetcore_version: netcoreapp2.2
+  package_id: ArcadeRepo
 
 artifacts:
-- path: artifacts\*.nupkg
-  name: NuGet Package
-deploy:
-- provider: NuGet
-  server: https://www.myget.org/F/ollon-buildtools/api/v2/package
-  api_key:
-    secure: V2NEKChHJzhrkA/4KGHfAmkf+BijIbODnmzNgHMem3VTglZzCzb4slOpNnMBtrmu
-  skip_symbols: true
-  artifact: NuGet Package
+- path: artifacts/bin/$(package_id)/$(configuration)/$(dotnetcore_version)/*.dll
+  name: Binary File
+
+before_build:
+- nuget restore
+  
+build_script:
+- cmd: Release.cmd
+
+deploy_script:
+- cmd: Deploy.cmd

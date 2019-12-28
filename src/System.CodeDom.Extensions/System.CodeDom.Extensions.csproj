@@ -17,9 +17,9 @@
 
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net472;netcoreapp3.0</TargetFrameworks>
+    <IsPackable>true</IsPackable>
+    <TargetFrameworks>netstandard2.0;netcoreapp3.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/sped-mobi/System.CodeDom.Extensions</PackageProjectUrl>
     <PackageIconUrl>https://marketplace.visualstudio.com/favicon.ico</PackageIconUrl>
     <RepositoryUrl>https://github.com/sped-mobi/System.CodeDom.Extensions</RepositoryUrl>
@@ -30,6 +30,7 @@ Commonly used types:
 System.CodeDom.CSharp.CSharpGenerator
 System.CodeDom.CSharp.CodeGeneratorBase
     </Description>
+    <PackageVersion>2.0.3</PackageVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
